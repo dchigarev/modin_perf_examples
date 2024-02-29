@@ -1,1 +1,5 @@
-modin>=0.28.0
+modin[ray]>=0.28.0
+# customer-segmentation requirements
+nltk
+scikit-learn
+scikit-learn-intelex
