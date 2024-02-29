@@ -147,13 +147,6 @@ If you are familiar with Ray, you can continue using all its infrastructure tool
 
 You can learn more about Modin’s integration with Ray in [Modin’s documentation](https://modin.readthedocs.io/en/stable/). 
 
-  
-
-
-
-
-
-
-
-
-
+#### Appendix
+All performance measurements for this article were made on HP ZCentral 4R Workstation (Intel Xeon W-2245 8 cores/16 threads; 64gb RAM)
+Modin version 0.28.0
