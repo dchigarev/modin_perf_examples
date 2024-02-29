@@ -13,16 +13,14 @@ data = {
     "City": np.tile([f"City{i}" for i in range(NUM_CITIES)], NROWS // NUM_CITIES),
     "Price": np.random.randint(50_000, 110_000, size=NROWS),
     "BuyCount": np.random.randint(0, 100, size=NROWS),
-    **{f"data_col{i}": np.random.randint(0, 1_000_000, size=NROWS) for i in range(NCOLS - 4)}
+    **{
+        f"data_col{i}": np.random.randint(0, 1_000_000, size=NROWS)
+        for i in range(NCOLS - 4)
+    },
 }
 
 df = pd.DataFrame(data)
 
-def from_pandas(df):
-    return df
-
-def to_pandas(df):
-    return df
 
 def calc_stats(df):
     # mean of normalized values
@@ -30,17 +28,60 @@ def calc_stats(df):
     return (df / df.sum()).mean()
 
 
-import modin.config as cfg
-from modin.pandas.io import from_pandas, to_pandas
+from modin.pandas.io import from_pandas
+
+# initialize Ray
 from_pandas(pd.DataFrame({"a": [1]}))
 
+
+def pure_pandas(df):
+    filtered = df.query("Price < 100_000 & BuyCount > 0")
+    stats_per_branch = filtered.groupby("Branch").apply(
+        calc_stats, include_groups=False
+    )
+    stats_per_city = filtered.groupby("City").apply(calc_stats, include_groups=False)
+
+    merged = filtered.merge(stats_per_branch, on="Branch").merge(
+        stats_per_city, on="City"
+    )
+
+
+def modin_one_conversion(df):
+    filtered = from_pandas(df).query("Price < 100_000 & BuyCount > 0")
+    stats_per_branch = filtered.groupby("Branch").apply(
+        calc_stats, include_groups=False
+    )
+    stats_per_city = filtered.groupby("City").apply(calc_stats, include_groups=False)
+
+    merged = filtered.merge(stats_per_branch, on="Branch").merge(
+        stats_per_city, on="City"
+    )
+    merged = merged.to_pandas()
+
+
+def modin_several_conversions(df):
+    filtered = from_pandas(df).query("Price < 100_000 & BuyCount > 0")
+    stats_per_branch = (
+        from_pandas(filtered).groupby("Branch").apply(calc_stats, include_groups=False)
+    )
+    stats_per_city = (
+        from_pandas(filtered).groupby("City").apply(calc_stats, include_groups=False)
+    )
+
+    merged = filtered.merge(stats_per_branch, on="Branch").merge(
+        stats_per_city, on="City"
+    )
+    merged = merged.to_pandas()
+
+
 t0 = timer()
+pure_pandas(df)
+print("pure pandas:", timer() - t0)
 
-filtered = from_pandas(df).query("Price < 100_000 & BuyCount > 0")
-stats_per_branch = from_pandas(filtered).groupby("Branch").apply(calc_stats, include_groups=False)
-stats_per_city = from_pandas(filtered).groupby("City").apply(calc_stats, include_groups=False)
+t0 = timer()
+modin_one_conversion(df)
+print("modin one conversion:", timer() - t0)
 
-merged = filtered.merge(stats_per_branch, on="Branch").merge(stats_per_city, on="City")
-merged = to_pandas(merged)
-
-print(timer() - t0)
+t0 = timer()
+modin_several_conversions(df)
+print("modin several conversions:", timer() - t0)

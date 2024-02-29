@@ -45,7 +45,7 @@ import pandas as pd
 
 Modin has efficient parallel implementations for most of the Pandas methods, covering all the variety of parameters they can take. Here is a little showcase demonstrating how Modin deals with the heaviest operations in pandas:
 
-<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img3_heavy_operations.jpg" style="display: block;margin-left: auto;margin-right: auto; width:50%; padding: 0; margin: 0"></img>
+<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img4_heavy_operations.jpg" style="display: block;margin-left: auto;margin-right: auto; width:50%; padding: 0; margin: 0"></img>
 ###### Link to the full script with the source code: https://github.com/dchigarev/modin_perf_examples/blob/master/heavy_operations.py
 
 Even if Modin doesn’t have a parallel implementation for a specific method, it defaults to using Pandas implementation for that method, issuing a warning in the process. This ensures that the workflow proceeds without interruption.
@@ -67,7 +67,7 @@ merged = filtered.merge(mean_per_branch, on="Branch")
                               # of the heavy block
 ```
 ###### Link to the full script with the source code: https://github.com/dchigarev/modin_perf_examples/blob/master/sequence_of_heavy_ops.py
-<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img4_sequence_of_heavy_ops.jpg" style="display: block;margin-left: auto;margin-right: auto; width:80%; padding: 0; margin: 0"></img>
+<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img5_sequence_of_heavy_ops.jpg" style="display: block;margin-left: auto;margin-right: auto; width:80%; padding: 0; margin: 0"></img>
 
 ### When not to use Modin
 
@@ -91,7 +91,7 @@ for threshold_price, code in reference_prices.items():
 
 In the example above, the whole loop takes about 80 seconds, however each iteration is simple and takes less than a second on Pandas, what makes this loop slow - is the number of iterations.
 
-<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img5_modin_in_a_for_loop.jpg" style="display: block;margin-left: auto;margin-right: auto; width:50%; padding: 0; margin: 0"></img>
+<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img6_modin_in_a_for_loop.jpg" style="display: block;margin-left: auto;margin-right: auto; width:50%; padding: 0; margin: 0"></img>
 
 Trying to apply Modin would be a mistake here. Modin can’t magically parallelize python’s for-loops, iterations are still executed sequentially. Moreover, the overhead of sequentially distributing each tiny iteration would eat up all the profit and rather slow-down the whole loop. Instead, you would want to rewrite this loop using Pandas API and apply Modin afterwards:
 
@@ -110,7 +110,7 @@ df["Flag"] = df["Goods"].apply(
 )
 ```
 
-<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img6_modin_for_loop_rewritten.jpg" style="display: block;margin-left: auto;margin-right: auto; width:50%; padding: 0; margin: 0"></img>
+<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img7_modin_for_loop_rewritten.jpg" style="display: block;margin-left: auto;margin-right: auto; width:50%; padding: 0; margin: 0"></img>
 
 It is important to note that Modin was designed to efficiently process heavy tasks, rather than a big number of small ones. Modin is under active development and targets itself for 1.0 release to work ‘not worse than Pandas’ in all variety of cases that are nowadays considered to be ‘anti-patterns’ for Modin.
 
@@ -122,7 +122,7 @@ Modin achieves speed up by distributing computations over CPU cores. It is recom
 ### How Modin works underneath
 Modin starts with distributing the input data – it splits the data into small portions, called partitions, along both axis: rows and columns. Each partition is a small Pandas DataFrame that is stored in an immutable shared storage.
 
-<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img7_modin_arch.jpg" style="display: block;margin-left: auto;margin-right: auto; width:60%; padding: 0; margin: 0"></img>
+<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img8_modin_arch.jpg" style="display: block;margin-left: auto;margin-right: auto; width:60%; padding: 0; margin: 0"></img>
 
 Then when an operation is invoked, different worker processes fetch a subset of partitions and apply an operation to each partition in parallel, writing the result back to the storage.
 

@@ -8,23 +8,32 @@ NCOLS = 10
 data = {
     "Goods": np.tile(np.arange(NUM_CODES), NROWS // NUM_CODES),
     "Price": np.random.randint(100, 150, size=NROWS),
-    **{f"data_col{i}": np.random.randint(0, 1_000_000, size=NROWS) for i in range(NCOLS - 2)}
+    **{
+        f"data_col{i}": np.random.randint(0, 1_000_000, size=NROWS)
+        for i in range(NCOLS - 2)
+    },
 }
 
 reference_mean_prices = {
     "Goods": np.random.choice(np.arange(NUM_CODES), size=NREFERENCES, replace=False),
-    "Price": np.random.randint(110, 130, size=NREFERENCES)
+    "Price": np.random.randint(110, 130, size=NREFERENCES),
 }
 
+# select here which library you want to use for the measurements
 import modin.pandas as pd
+
 # import pandas as pd
 
 from modin.utils import execute
 import modin.config as cfg
+
+# initialize Ray
 pd.DataFrame(np.arange(cfg.NPartitions.get() * cfg.MinPartitionSize.get())).to_numpy()
 
 df = pd.DataFrame(data)
-reference_mean_prices = pd.Series(reference_mean_prices["Price"], index=reference_mean_prices["Goods"]).sort_index()
+reference_mean_prices = pd.Series(
+    reference_mean_prices["Price"], index=reference_mean_prices["Goods"]
+).sort_index()
 
 from timeit import default_timer as timer
 
@@ -45,7 +54,6 @@ def case1_for_loop(df, reference_prices):
     for threshold_price, code in reference_prices.items():
         t1 = timer()
         mean_price = df[df["Goods"] == code]["Price"].mean()
-        flag_value = mean_price > threshold_price
         if mean_price > threshold_price:
             df.loc[df["Goods"] == code, "Flag"] = 1
         iters.append(timer() - t1)
@@ -55,12 +63,11 @@ def case1_for_loop(df, reference_prices):
     print("mean", np.mean(iters))
     return df
 
+
 def case2_groupby_mean(df, reference_mean_prices):
     # The same code, but using groupby.mean() + .apply()
     actual_mean_prices = (
-        df[["Goods", "Price"]][
-            df["Goods"].isin(reference_mean_prices.index)
-        ]
+        df[["Goods", "Price"]][df["Goods"].isin(reference_mean_prices.index)]
         .groupby("Goods")["Price"]
         .mean()
     )
@@ -70,10 +77,11 @@ def case2_groupby_mean(df, reference_mean_prices):
     )
     return df
 
+
 print("data done...")
 
 t1 = timer()
 res = case2_groupby_mean(df, reference_mean_prices)
+# trigger execution for Modin for fair measurement
 execute(res)
-len(res)
 print("time:", timer() - t1)
