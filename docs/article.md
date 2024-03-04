@@ -150,6 +150,7 @@ You can learn more about Modin’s integration with Ray in [Modin’s documentat
 #### Appendix
 All performance measurements for this article were made on HP ZCentral 4R Workstation (Intel Xeon W-2245 8 cores/16 threads; 64gb RAM)
 - Modin version: 0.28.0
+- Pandas version: 2.2.1
 - Execution engine: Ray
 - Ray version: 2.9.1
 - OS: Ubuntu 22.04.2 LTS
