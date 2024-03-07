@@ -104,7 +104,7 @@ print("running test cases for modin...")
 
 # pandas
 print("running test cases for pandas...")
-(pd_first_t, pd_first_m), pd_second = measure_cases(df.to_pandas(), reference_mean_prices.to_pandas())
+(pd_first_t, pd_first_m), pd_second = measure_cases(df.modin.to_pandas(), reference_mean_prices.modin.to_pandas())
 
 print(f"Modin:\n\tmean iteration time: {md_first_m}s\n\testimated case1_for_loop time: {md_first_t}s\n\tcase2_groupby_mean time: {md_second}s")
 print(f"Pandas:\n\tmean iteration time: {pd_first_m}s\n\testimated case1_for_loop time: {pd_first_t}s\n\tcase2_groupby_mean time: {pd_second}s")

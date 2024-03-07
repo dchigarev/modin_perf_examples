@@ -59,11 +59,11 @@ def modin_one_conversion(df):
     merged = filtered.merge(stats_per_branch, on="Branch").merge(
         stats_per_city, on="City"
     )
-    merged = merged.to_pandas()
+    merged = merged.modin.to_pandas()
 
 
 def modin_several_conversions(df):
-    filtered = from_pandas(df).query("Price < 100_000 & BuyCount > 0").to_pandas()
+    filtered = from_pandas(df).query("Price < 100_000 & BuyCount > 0").modin.to_pandas()
     stats_per_branch = (
         from_pandas(filtered).groupby("Branch").apply(calc_stats, include_groups=False)
     )
@@ -74,7 +74,7 @@ def modin_several_conversions(df):
     merged = from_pandas(filtered).merge(stats_per_branch, on="Branch").merge(
         stats_per_city, on="City"
     )
-    merged = merged.to_pandas()
+    merged = merged.modin.to_pandas()
 
 print("running test cases for modin...")
 

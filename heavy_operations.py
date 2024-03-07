@@ -8,7 +8,7 @@ import modin.config as cfg
 from modin.pandas.io import from_pandas, read_csv
 
 # initialize ray
-from_pandas(pd.DataFrame({"a": [1]})).to_pandas()
+from_pandas(pd.DataFrame({"a": [1]})).modin.to_pandas()
 
 
 def measure_apply():
@@ -29,7 +29,7 @@ def measure_apply():
     pd_time = timer() - t1
 
     t1 = timer()
-    res = from_pandas(df)["date_col"].apply(apply_func).to_pandas()
+    res = from_pandas(df)["date_col"].apply(apply_func).modin.to_pandas()
     md_time = timer() - t1
     print(f"apply: {pd_time=}; {md_time=}")
 
@@ -72,7 +72,7 @@ def measure_merge():
     t1 = timer()
     df1 = from_pandas(df1)
     df2 = from_pandas(df2)
-    df1.merge(df2, on="key").to_pandas()
+    df1.merge(df2, on="key").modin.to_pandas()
     md_time = timer() - t1
     print(f"merge: {pd_time=}; {md_time=}")
     cfg.AsyncReadMode.put(False)
@@ -100,7 +100,7 @@ def measure_groupby_rolling():
     print("pandas done...")
 
     t1 = timer()
-    from_pandas(df).groupby("key").rolling(10).mean().to_pandas()
+    from_pandas(df).groupby("key").rolling(10).mean().modin.to_pandas()
     md_time = timer() - t1
 
     print(f"groupby: {pd_time=}; {md_time=}")
@@ -127,7 +127,7 @@ def measure_read_csv():
         print("pandas done...")
 
         t1 = timer()
-        read_csv(file.name).to_pandas()
+        read_csv(file.name).modin.to_pandas()
         md_time = timer() - t1
 
         print(f"read_csv: {pd_time=}; {md_time=}")

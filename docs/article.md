@@ -37,7 +37,7 @@ import pandas as pd
      ["CustomerID", "StockCode"], as_index=False
  )
 -df_cleaned = grp.apply(groupby_filtering)
-+df_cleaned = grp.apply(groupby_filtering).to_pandas()
++df_cleaned = grp.apply(groupby_filtering).modin.to_pandas()
 ```
 
 <img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img3_customer_segmentation_mixed_pandas_modin.jpg" style="display: block;margin-left: auto;margin-right: auto; width:80%; padding: 0; margin: 0"></img>
@@ -63,8 +63,8 @@ mean_per_city = filtered.groupby("City").apply(calc_stats)
 
 merged = filtered.merge(mean_per_branch, on="Branch")
                  .merge(mean_per_city, on="City")
-                 .to_pandas() # Converting back to Pandas at the end
-                              # of the heavy block
+                 .modin.to_pandas() # Converting back to Pandas at the end
+                                    # of the heavy block
 ```
 ###### Link to the full script with the source code: https://github.com/dchigarev/modin_perf_examples/blob/master/sequence_of_heavy_ops.py
 <img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img5_sequence_of_heavy_ops.jpg" style="display: block;margin-left: auto;margin-right: auto; width:80%; padding: 0; margin: 0"></img>

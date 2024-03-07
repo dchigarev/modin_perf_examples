@@ -223,7 +223,7 @@ with measure("groupby.apply(complex_aggregation)"):
     df_cleaned = grp.apply(groupby_filtering)
 
     if mode == "Mixed":
-        df_cleaned = df_cleaned.to_pandas()
+        df_cleaned = df_cleaned.modin.to_pandas()
 
 with measure("prepare for fit/predict"):
     remaining_entries = df_cleaned[
