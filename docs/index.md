@@ -20,7 +20,7 @@ import modin.pandas as pd
 <img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img2_customer_segmentation_pandas_vs_modin.jpg" style="display: block;margin-left: auto;margin-right: auto; width:80%; padding: 0; margin: 0"></img>
 ###### Measurements for the ‘customer segmentation’ workload after changing the import statement from Pandas to Modin
 
-In comparison with other distributed dataframe libraries, Modin claims to be 99% Pandas compatible, meaning that you don’t need to modify your Pandas code at all to apply Modin. Note how Modin has been able to process the groupby even though it used a complex custom aggregation function that was written specifically for Pandas *refer the code of the agg function, maybe hide it under a spoiler*.
+In comparison with other distributed dataframe libraries, Modin claims to be 99% Pandas compatible, meaning that you don’t need to modify your Pandas code at all to apply Modin. Note how Modin has been able to process the groupby even though it used a complex custom aggregation function that was written specifically for Pandas [[code of the aggregation function]](https://github.com/dchigarev/modin_perf_examples/blob/204a8381bf7a4961787d97412f092bc975c0fb57/customer_segmentation_simplified.py#L182-L223).
 
 Although Modin promises speedup after changing only the import statement, it is not a magic pill that makes everything faster. As a practice-based observation, Modin’s implementation for a certain method works faster if the operation takes longer than 5 seconds in Pandas. That would be an explanation for why we see slowdowns in certain parts of the workflow here after applying Modin.
 
