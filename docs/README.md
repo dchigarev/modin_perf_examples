@@ -32,3 +32,12 @@ so the ["site-title" ref would point to `/home.html` instead](https://github.com
     ---
     ```
 4. Write your post in the file
+
+## How to run the gh pages locally for debugging
+
+1. Install ruby <b>with dev kit</b>: https://rubyinstaller.org/downloads/
+2. Install dependencies: `gem install jekyll bundler`
+3. Change your dir to `docs`
+4. Run `bundler install`
+5. Run the server: `bundle exec jekyll serve`
+6. After that, you can access the pages via `127.0.0.1:4000` in your browser.
