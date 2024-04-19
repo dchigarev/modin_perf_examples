@@ -1,1 +1,10 @@
-markdown: GFM
+theme: minima
+plugins:
+  - jekyll-feed
+title: Modin blog-posts
+# The `>` after `description:` means to ignore line-breaks until next key.
+# If you want to omit the line-break after the end of text, use `>-` instead.
+description: >
+  A collection of blog posts about Modin written by Modin team.
+header_pages:
+  - home.md

@@ -1,3 +1,11 @@
+---
+layout: post
+title: "Range Partitioning in Modin"
+categories: misc
+permalink: /gh_page_2.html
+author: YarShev
+---
+
 #### Annotation
 
 As of Modin 0.29.0 it is possible to perform the operations such as `groupby`, `merge`, `pivot_table`, `unique`,

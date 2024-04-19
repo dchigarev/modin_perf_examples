@@ -1,3 +1,12 @@
+---
+layout: post
+title: "Breaking a single core limitation of Pandas with Modin"
+categories: misc
+permalink: /gh_page_1.html
+author: dchigarev
+---
+
+
 #### Annotation
 Discover the power of Modin in overcoming the performance bottlenecks of Pandas. We'll walk you through how a simple switch can reduce your waiting times and make your workflow smooth and speedy, all without leaving the comfort of Pandas behind.
 
