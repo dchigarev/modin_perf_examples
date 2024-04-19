@@ -15,8 +15,8 @@ Discover the power of Modin in overcoming the performance bottlenecks of Pandas.
 Imagine you are writing a data-preprocessing notebook using Pandas, and the total execution time of 4min+ doesn’t satisfy you. You start measuring individual stages of the workload and see a picture like this: 97% of the whole workload’s time is taken by a single operation, such as `df.groupby()`, `df.apply()` or `df.merge()`
 
 
-<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img1_customer_segmentation_pandas.jpg" style="display: block;margin-left: auto;margin-right: auto; width:50%; padding: 0; margin: 0"></img>
-###### Simplified version of 'Customer segmentation' notebook: https://github.com/dchigarev/modin_perf_examples/blob/master/gh_page_1/customer_segmentation_simplified.py<br>Original notebook: https://www.kaggle.com/code/fabiendaniel/customer-segmentation/notebook
+<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img1_customer_segmentation_pandas.jpg" style="display: block;margin-left: auto;margin-right: auto; padding: 0; margin: 0">
+###### Simplified version of 'Customer segmentation' notebook: [https://github.com/dchigarev/modin_perf_examples/blob/master/gh_page_1/customer_segmentation_simplified.py](https://github.com/dchigarev/modin_perf_examples/blob/master/gh_page_1/customer_segmentation_simplified.py)<br>Original notebook: [https://www.kaggle.com/code/fabiendaniel/customer-segmentation/notebook](https://www.kaggle.com/code/fabiendaniel/customer-segmentation/notebook)
 
 You are struggling to speed up the Pandas operation due to its single-core limitation and the complexity of parallelizing tasks like groupby or merge on your own. Modin could be a solution here, offering a drop-in replacement for Pandas and efficient parallel implementations of its API. It’s enough only to change your import statement to start using Modin:
 ```python
@@ -26,7 +26,7 @@ import modin.pandas as pd
 # your workload without any changes
 ```
 
-<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img2_customer_segmentation_pandas_vs_modin.jpg" style="display: block;margin-left: auto;margin-right: auto; width:80%; padding: 0; margin: 0"></img>
+<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img2_customer_segmentation_pandas_vs_modin.jpg" style="display: block;margin-left: auto;margin-right: auto; padding: 0; margin: 0">
 ###### Measurements for the ‘customer segmentation’ workload after changing the import statement from Pandas to Modin
 
 In comparison with other distributed dataframe libraries, Modin claims to be 99% Pandas compatible, meaning that you don’t need to modify your Pandas code at all to apply Modin. Note how Modin has been able to process the groupby even though it used a complex custom aggregation function that was written specifically for Pandas [[code of the aggregation function]](https://github.com/dchigarev/modin_perf_examples/blob/7a47793a78afd52a6319d45f08f6246414a20bd3/gh_page_1/customer_segmentation_simplified.py#L182-L214).
@@ -49,13 +49,13 @@ import pandas as pd
 +df_cleaned = grp.apply(groupby_filtering).modin.to_pandas()
 ```
 
-<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img3_customer_segmentation_mixed_pandas_modin.jpg" style="display: block;margin-left: auto;margin-right: auto; width:80%; padding: 0; margin: 0"></img>
+<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img3_customer_segmentation_mixed_pandas_modin.jpg" style="display: block;margin-left: auto;margin-right: auto; padding: 0; margin: 0">
 ###### Measurements for the ‘customer segmentation’ workload Pandas vs Modin vs Modin + Pandas
 
 Modin has efficient parallel implementations for most of the Pandas methods, covering all the variety of parameters they can take. Here is a little showcase demonstrating how Modin deals with the heaviest operations in pandas:
 
-<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img4_heavy_operations.jpg" style="display: block;margin-left: auto;margin-right: auto; width:50%; padding: 0; margin: 0"></img>
-###### Link to the full script with the source code: https://github.com/dchigarev/modin_perf_examples/blob/master/gh_page_1/heavy_operations.py
+<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img4_heavy_operations.jpg" style="display: block;margin-left: auto;margin-right: auto; padding: 0; margin: 0">
+###### Link to the full script with the source code: [https://github.com/dchigarev/modin_perf_examples/blob/master/gh_page_1/heavy_operations.py](https://github.com/dchigarev/modin_perf_examples/blob/master/gh_page_1/heavy_operations.py)
 
 Even if Modin doesn’t have a parallel implementation for a specific method, it defaults to using Pandas implementation for that method, issuing a warning in the process. This ensures that the workflow proceeds without interruption.
 
@@ -75,8 +75,8 @@ merged = filtered.merge(mean_per_branch, on="Branch")
                  .modin.to_pandas() # Converting back to Pandas at the end
                                     # of the heavy block
 ```
-###### Link to the full script with the source code: https://github.com/dchigarev/modin_perf_examples/blob/master/gh_page_1/sequence_of_heavy_ops.py
-<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img5_sequence_of_heavy_ops.jpg" style="display: block;margin-left: auto;margin-right: auto; width:80%; padding: 0; margin: 0"></img>
+###### Link to the full script with the source code: [https://github.com/dchigarev/modin_perf_examples/blob/master/gh_page_1/sequence_of_heavy_ops.py](https://github.com/dchigarev/modin_perf_examples/blob/master/gh_page_1/sequence_of_heavy_ops.py)
+<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img5_sequence_of_heavy_ops.jpg" style="display: block;margin-left: auto;margin-right: auto; padding: 0; margin: 0">
 
 ### When not to use Modin
 
@@ -96,11 +96,11 @@ for threshold_price, code in reference_prices.items():
     if mean_price > threshold_price:
         df.loc[df["Goods"] == code, "Flag"] = 1
 ```
-###### Link to the full script with the source code: https://github.com/dchigarev/modin_perf_examples/blob/master/gh_page_1/for_loop_vs_groupby.py
+###### Link to the full script with the source code: [https://github.com/dchigarev/modin_perf_examples/blob/master/gh_page_1/for_loop_vs_groupby.py](https://github.com/dchigarev/modin_perf_examples/blob/master/gh_page_1/for_loop_vs_groupby.py)
 
 In the example above, the whole loop takes about 80 seconds, however each iteration is simple and takes less than a second on Pandas, what makes this loop slow - is the number of iterations.
 
-<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img6_modin_in_a_for_loop.jpg" style="display: block;margin-left: auto;margin-right: auto; width:50%; padding: 0; margin: 0"></img>
+<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img6_modin_in_a_for_loop.jpg" style="display: block;margin-left: auto;margin-right: auto; padding: 0; margin: 0">
 
 Trying to apply Modin would be a mistake here. Modin can’t magically parallelize python’s for-loops, iterations are still executed sequentially. Moreover, the overhead of sequentially distributing each tiny iteration would eat up all the profit and rather slow-down the whole loop. Instead, you would want to rewrite this loop using Pandas API and apply Modin afterwards:
 
@@ -119,7 +119,7 @@ df["Flag"] = df["Goods"].apply(
 )
 ```
 
-<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img7_modin_for_loop_rewritten.jpg" style="display: block;margin-left: auto;margin-right: auto; width:50%; padding: 0; margin: 0"></img>
+<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img7_modin_for_loop_rewritten.jpg" style="display: block;margin-left: auto;margin-right: auto; padding: 0; margin: 0">
 
 It is important to note that Modin was designed to efficiently process heavy tasks, rather than a big number of small ones. Modin is under active development and targets itself for 1.0 release to work ‘not worse than Pandas’ in all variety of cases that are nowadays considered to be ‘anti-patterns’ for Modin.
 
@@ -131,7 +131,7 @@ Modin achieves speed up by distributing computations over CPU cores. It is recom
 ### How Modin works underneath
 Modin starts with distributing the input data – it splits the data into small portions, called partitions, along both axis: rows and columns. Each partition is a small Pandas DataFrame that is stored in an immutable shared storage.
 
-<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img8_modin_arch.jpg" style="display: block;margin-left: auto;margin-right: auto; width:60%; padding: 0; margin: 0"></img>
+<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/img8_modin_arch.jpg" style="display: block;margin-left: auto;margin-right: auto; padding: 0; margin: 0">
 
 Then when an operation is invoked, different worker processes fetch a subset of partitions and apply an operation to each partition in parallel, writing the result back to the storage.
 

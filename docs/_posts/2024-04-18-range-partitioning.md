@@ -58,7 +58,7 @@ Return unique values of a Series object. The duplicate rate shows the procentage
 You can learn more about this micro-benchmark by reading its
 [source code](https://github.com/dchigarev/modin_perf_examples/blob/master/gh_page_2/unique_op.py).
 
-<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/unique_16cpus.jpg" style="display: block;margin-left: auto;margin-right: auto; width:80%; padding: 0; margin: 0"></img>
+<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/unique_16cpus.jpg" style="display: block;margin-left: auto;margin-right: auto; padding: 0; margin: 0">
 
 Range-partitioning implementation of `unique` works better when the input data size is big (more than 5_000_000 rows) and
 when the output size is also expected to be big (no more than 80% values are duplicates).
@@ -70,7 +70,7 @@ The subset size shows the number of columns being specified as a subset paramete
 You can learn more about this micro-benchmark by reading its
 [source code](https://github.com/dchigarev/modin_perf_examples/blob/master/gh_page_2/drop_duplicates_op.py).
 
-<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/drop_duplicates_16cpus.jpg" style="display: block;margin-left: auto;margin-right: auto; width:80%; padding: 0; margin: 0"></img>
+<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/drop_duplicates_16cpus.jpg" style="display: block;margin-left: auto;margin-right: auto; padding: 0; margin: 0">
 
 Range-partitioning implementation of `drop_duplicates` works better when the input data size is big (more than 5_000_000 rows)
 and when the output size is also expected to be big (no more than 80% values are duplicates).
@@ -80,7 +80,7 @@ and when the output size is also expected to be big (no more than 80% values are
 Resample time-series data and compute sum of group values. You can learn more about this micro-benchmark by reading its
 [source code](https://github.com/dchigarev/modin_perf_examples/blob/master/gh_page_2/resample_sum_op.py).
 
-<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/resample_16cpus.jpg" style="display: block;margin-left: auto;margin-right: auto; width:80%; padding: 0; margin: 0"></img>
+<img src="https://github.com/dchigarev/modin_perf_examples/raw/master/docs/imgs/resample_16cpus.jpg" style="display: block;margin-left: auto;margin-right: auto; padding: 0; margin: 0">
 
 It is recommended to use the range partitioning for resampling if you're dealing with a dataframe
 that has more than 5_000_000 rows and the expected output is also expected to be big (more than 500_000 rows).
