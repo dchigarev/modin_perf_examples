@@ -79,7 +79,7 @@ that has more than 5_000_000 rows and the expected output is also expected to be
 
 #### Appendix
 
-All performance measurements for this post were made on HP ZCentral 4R Workstation (Intel Xeon W-2245 8 cores/16 threads; 64gb RAM).
+All performance measurements for this post were made on Intel(R) Xeon(R) Gold 6238R CPU @ 2.20GHz (112 CPUs; 200 GB RAM).
 
 - Modin version: 0.29.0
 - Pandas version: 2.2.1
