@@ -35,7 +35,7 @@ so the ["site-title" ref would point to `/home.html` instead](https://github.com
 
 ## How to run the gh pages locally for debugging
 
-1. Install ruby <b>with dev kit</b>: https://rubyinstaller.org/downloads/
+1. Install ruby <b><i>with dev kit</i></b>: https://rubyinstaller.org/downloads/ (make sure to run `ridk install` after the installation and install everything there)
 2. Install dependencies: `gem install jekyll bundler`
 3. Change your dir to `docs`
 4. Run `bundler install`
