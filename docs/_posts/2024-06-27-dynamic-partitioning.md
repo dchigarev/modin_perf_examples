@@ -2,21 +2,30 @@
 layout: post
 title: "Dynamic Partitioning in Modin"
 categories: misc
-permalink: /gh_page_2.html
+permalink: /gh_page_3.html
 author: Kirill Suvorov
 ---
 
 #### Annotation
 
-Modin improves work with partitions in the Map and TreeReduce operators in the 0.30.0 release for wide Dataframes.
+In 0.30.0 version Modin introduced dynamic partitioning for DataFrames
+having excessive amount of partitions into the `Map` and `TreeReduce` operators.
+This allows to boost performance for certain operations by combining some partitions
+into virtual ones and utilizing CPU cores more efficiently.
 
 ## Dynamic Partitioning
 
-As you know, Modin splits a DataFrame into several partitions to parallelize execution. By default, Modin uses the CPU count for this purpose. When an operation is executed, the required partitions are sent to remote tasks and executed in parallel. To achieve optimal performance, it’s essential to fully utilize all available CPUs. Therefore, Modin splits the DataFrame into parts along both axes, resulting in an N × N partition grid (where N represents the CPU count).
+As you know, Modin splits a DataFrame into partitions to distribute computation.
+By default, Modin uses the number or CPUs available in the system for this purpose.
+When an operation is executed, the required partitions are sent to remote tasks and processed in parallel.
+To achieve optimal performance it's essential to fully utilize all available CPUs.
+Therefore, Modin splits the DataFrame into partitions along both axes,
+sometimes resulting in an `N × N` partition grid (where N represents the number of CPUs).
 
 This approach works well, especially for axis operations. In such cases, we concatenate some partitions into virtual partitions and distribute them to separate remote tasks. As a result, we achieve an optimal number of remote tasks equal to the CPU count. However, there are situations where this method is less effective. For example, the Ray engine has difficulty handling too many remote tasks. This results in a significant slowdown compared to running a small number of tasks but with a large amount of data on each. So, for simple operations such as apply, using this partitioning strategy can lead to performance problems due to too many remote tasks. 
 
-To address this problem, a new approach called “Dynamic Partitioning” has been implemented in Modin 0.30.0. The main idea behind Dynamic Partitioning is to merge block partitions into virtual partitions, reducing the overall number of remote tasks.
+To address this problem, a new approach called `Dynamic Partitioning` has been implemented in Modin 0.30.0.
+The main idea behind `Dynamic Partitioning` is to combine some partitions into virtual ones, thereby reducing the overall number of remote tasks.
 
 ## Boosted DataFrame operations
 
@@ -27,7 +36,8 @@ The TreeReduce operator is used for operations like count, sum, prod, any, all, 
 
 ## Using Dynamic Partitioning in Modin
 
-You don’t need to set any environment variables to activate this approach. Simply update to Modin 0.30.0, and your scripts for wide Dataframes will benefit from improved performance.
+You don't need to set any configuration variables to enable this approach.
+Simply update to Modin 0.30.0 or higher.
 
 ## Perfomance result
 
@@ -50,7 +60,7 @@ You don’t need to set any environment variables to activate this approach. Sim
 
 To test the performance boost of Dynamic Partitioning, we generated a wide DataFrame with a shape of (20000, 5000). As you can see, the new Modin version provides significant speed-up for DataFrames with a large number of columns.
 
-## Next Steps
+### Next Steps
 
 Dynamic Partitioning will be implemented for other DataFrame operations as well. Stay tuned for further updates in our GitHub page and follow our posts to stay informed about Modin news.
 
