@@ -37,22 +37,22 @@ Simply update to Modin 0.30.0 or higher.
 
 ### Performance result
 
-| Operation | Modin 0.29.0 | Modin 0.30.0 | Ratio |
+| Operation | Modin 0.29.0(s) | Modin 0.30.0(s) | Speedup |
 | --------- | ------------ | ------------ | ----- |     
-| abs       | 5.768716335  | 1.559553780  | 3.70  |
-| map       | 5.665995907  | 1.663878210  | 3.41  |
-| isna      | 4.371069111  | 1.041565318  | 4.20  |
-| notna     | 4.149922594  | 1.276469827  | 3.25  |
-| round     | 4.789841156  | 1.581816196  | 3.03  |
-| replace   | 4.871268023  | 1.442099884  | 3.38  |
-| count     | 5.163318828  | 1.835885521  | 2.81  |
-| sum       | 5.351826966  | 1.907279816  | 2.81  |
-| prod      | 5.186810397  | 2.101620920  | 2.47  |
-| any       | 5.251107819  | 1.860132668  | 2.82  |
-| all       | 5.724503774  | 1.716603592  | 3.33  |
-| max       | 5.307218991  | 1.764660481  | 3.01  |
-| min       | 5.537900437  | 1.803861558  | 3.07  |
-| mean      | 6.400612667  | 2.005258847  | 3.19  |
+| abs       | 5.768716335  | 1.559553780  | 3.70x  |
+| map       | 5.665995907  | 1.663878210  | 3.41x  |
+| isna      | 4.371069111  | 1.041565318  | 4.20x  |
+| notna     | 4.149922594  | 1.276469827  | 3.25x  |
+| round     | 4.789841156  | 1.581816196  | 3.03x  |
+| replace   | 4.871268023  | 1.442099884  | 3.38x  |
+| count     | 5.163318828  | 1.835885521  | 2.81x  |
+| sum       | 5.351826966  | 1.907279816  | 2.81x  |
+| prod      | 5.186810397  | 2.101620920  | 2.47x  |
+| any       | 5.251107819  | 1.860132668  | 2.82x  |
+| all       | 5.724503774  | 1.716603592  | 3.33x  |
+| max       | 5.307218991  | 1.764660481  | 3.01x  |
+| min       | 5.537900437  | 1.803861558  | 3.07x  |
+| mean      | 6.400612667  | 2.005258847  | 3.19x  |
 
 To test the performance boost of Dynamic Partitioning, we generated a wide DataFrame with a shape of (20000, 5000).
 As you can see, the new Modin version provides significant speed-up for DataFrames with a large number of columns.
@@ -60,7 +60,7 @@ As you can see, the new Modin version provides significant speed-up for DataFram
 ### Next Steps
 
 There are plans to introduce `Dynamic Partitioning` into some more operators in Modin.
-Stay tuned for further updates on  Modin GitHub page and follow our posts to stay informed about Modin news.
+Stay tuned for further updates on Modin GitHub page and follow our posts to stay informed about Modin news.
 
 #### Appendix
 
