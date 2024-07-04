@@ -14,13 +14,13 @@ Modin improves work with partitions in the Map and TreeReduce operators in the 0
 
 As you know, Modin splits a DataFrame into several partitions to parallelize execution. By default, Modin uses the CPU count for this purpose. When an operation is executed, the required partitions are sent to remote tasks and executed in parallel. To achieve optimal performance, it’s essential to fully utilize all available CPUs. Therefore, Modin splits the DataFrame into parts along both axes, resulting in an N × N partition grid (where N represents the CPU count).
 
-This approach works well, especially for axis operations. In such cases, we concatenate some partitions into virtual partitions and distribute them to separate remote tasks. As a result, we achieve an optimal number of remote tasks equal to the CPU count. However, there are situations where this method is less effective. For straightforward operations like apply, using this partition splitting strategy can lead to performance issues due to an excessively large number of remote tasks.
+This approach works well, especially for axis operations. In such cases, we concatenate some partitions into virtual partitions and distribute them to separate remote tasks. As a result, we achieve an optimal number of remote tasks equal to the CPU count. However, there are situations where this method is less effective. For example, the Ray engine has difficulty handling too many remote tasks. This results in a significant slowdown compared to running a small number of tasks but with a large amount of data on each. So, for simple operations such as apply, using this partitioning strategy can lead to performance problems due to too many remote tasks. 
 
 To address this problem, a new approach called “Dynamic Partitioning” has been implemented in Modin 0.30.0. The main idea behind Dynamic Partitioning is to merge block partitions into virtual partitions, reducing the overall number of remote tasks.
 
 ## Boosted DataFrame operations
 
-In Modin 0.30.0, dynamic partitioning is applied to the Map and TreeReduce operators.
+In Modin 0.30.0, dynamic partitioning is applied to the [Map](https://modin.readthedocs.io/en/latest/flow/modin/core/dataframe/algebra.html#map-operator) and [TreeReduce](https://modin.readthedocs.io/en/latest/flow/modin/core/dataframe/algebra.html#map-operator) operators.
 
 The Map operator is used for DataFrame operations such as abs, map, isna, notna, replace, and others.
 The TreeReduce operator is used for operations like count, sum, prod, any, all, max, min, and mean.
