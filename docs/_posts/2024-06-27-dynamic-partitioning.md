@@ -59,8 +59,8 @@ As you can see, the new Modin version provides significant speed-up for DataFram
 
 ### Next Steps
 
-Dynamic Partitioning will be implemented for other DataFrame operations as well. Stay tuned for further updates in 
-our GitHub page and follow our posts to stay informed about Modin news.
+There are plans to introduce `Dynamic Partitioning` into some more operators in Modin.
+Stay tuned for further updates on  Modin GitHub page and follow our posts to stay informed about Modin news.
 
 #### Appendix
 
