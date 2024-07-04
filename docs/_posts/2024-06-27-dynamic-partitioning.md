@@ -3,7 +3,7 @@ layout: post
 title: "Dynamic Partitioning in Modin"
 categories: misc
 permalink: /gh_page_3.html
-author: Kirill Suvorov
+author: Retribution98
 ---
 
 #### Annotation
@@ -13,7 +13,7 @@ having excessive amount of partitions into the `Map` and `TreeReduce` operators.
 This allows to boost performance for certain operations by combining some partitions
 into virtual ones and utilizing CPU cores more efficiently.
 
-## Dynamic Partitioning
+### Dynamic Partitioning
 
 As you know, Modin splits a DataFrame into partitions to distribute computation.
 By default, Modin uses the number or CPUs available in the system for this purpose.
@@ -22,47 +22,45 @@ To achieve optimal performance it's essential to fully utilize all available CPU
 Therefore, Modin splits the DataFrame into partitions along both axes,
 sometimes resulting in an `N × N` partition grid (where N represents the number of CPUs).
 
-This approach works well, especially for axis operations. In such cases, we concatenate some partitions into virtual partitions and distribute them to separate remote tasks. As a result, we achieve an optimal number of remote tasks equal to the CPU count. However, there are situations where this method is less effective. For example, the Ray engine has difficulty handling too many remote tasks. This results in a significant slowdown compared to running a small number of tasks but with a large amount of data on each. So, for simple operations such as apply, using this partitioning strategy can lead to performance problems due to too many remote tasks. 
+This approach works well when the number of partitions close to the number of CPUs.
+However, there are the cases when this method is not that effective. For straightforward operations like `map`
+on a DataFrame that has the number of partitions greatly exceeding the number of CPUs,
+using this partitioning strategy can lead to performance issues due to an excessively large number of remote tasks.
 
 To address this problem, a new approach called `Dynamic Partitioning` has been implemented in Modin 0.30.0.
 The main idea behind `Dynamic Partitioning` is to combine some partitions into virtual ones, thereby reducing the overall number of remote tasks.
 
-## Boosted DataFrame operations
-
-In Modin 0.30.0, dynamic partitioning is applied to the [Map](https://modin.readthedocs.io/en/latest/flow/modin/core/dataframe/algebra.html#map-operator) and [TreeReduce](https://modin.readthedocs.io/en/latest/flow/modin/core/dataframe/algebra.html#map-operator) operators.
-
-The Map operator is used for DataFrame operations such as abs, map, isna, notna, replace, and others.
-The TreeReduce operator is used for operations like count, sum, prod, any, all, max, min, and mean.
-
-## Using Dynamic Partitioning in Modin
+### Using Dynamic Partitioning in Modin
 
 You don't need to set any configuration variables to enable this approach.
 Simply update to Modin 0.30.0 or higher.
 
-## Perfomance result
+### Performance result
 
-| operation | modin 0.29.0 | modin 0.30.0 | speed up |
-| --------- | ------------ | ------------ | -------- |     
-| abs       | 5.768716335  | 1.559553780  | 369.90%  |
-| map       | 5.665995907  | 1.663878210  | 340.53%  |
-| isna      | 4.371069111  | 1.041565318  | 419.66%  |
-| notna     | 4.149922594  | 1.276469827  | 325.11%  |
-| round     | 4.789841156  | 1.581816196  | 302.81%  |
-| replace   | 4.871268023  | 1.442099884  | 337.79%  |
-| count     | 5.163318828  | 1.835885521  | 281.24%  |
-| sum       | 5.351826966  | 1.907279816  | 280.60%  |
-| prod      | 5.186810397  | 2.101620920  | 246.80%  |
-| any       | 5.251107819  | 1.860132668  | 282.30%  |
-| all       | 5.724503774  | 1.716603592  | 333.48%  |
-| max       | 5.307218991  | 1.764660481  | 300.75%  |
-| min       | 5.537900437  | 1.803861558  | 307.00%  |
-| mean      | 6.400612667  | 2.005258847  | 319.19%  |
+| Operation | Modin 0.29.0 | Modin 0.30.0 | Ratio |
+| --------- | ------------ | ------------ | ----- |     
+| abs       | 5.768716335  | 1.559553780  | 3.70  |
+| map       | 5.665995907  | 1.663878210  | 3.41  |
+| isna      | 4.371069111  | 1.041565318  | 4.20  |
+| notna     | 4.149922594  | 1.276469827  | 3.25  |
+| round     | 4.789841156  | 1.581816196  | 3.03  |
+| replace   | 4.871268023  | 1.442099884  | 3.38  |
+| count     | 5.163318828  | 1.835885521  | 2.81  |
+| sum       | 5.351826966  | 1.907279816  | 2.81  |
+| prod      | 5.186810397  | 2.101620920  | 2.47  |
+| any       | 5.251107819  | 1.860132668  | 2.82  |
+| all       | 5.724503774  | 1.716603592  | 3.33  |
+| max       | 5.307218991  | 1.764660481  | 3.01  |
+| min       | 5.537900437  | 1.803861558  | 3.07  |
+| mean      | 6.400612667  | 2.005258847  | 3.19  |
 
-To test the performance boost of Dynamic Partitioning, we generated a wide DataFrame with a shape of (20000, 5000). As you can see, the new Modin version provides significant speed-up for DataFrames with a large number of columns.
+To test the performance boost of Dynamic Partitioning, we generated a wide DataFrame with a shape of (20000, 5000).
+As you can see, the new Modin version provides significant speed-up for DataFrames with a large number of columns.
 
 ### Next Steps
 
-Dynamic Partitioning will be implemented for other DataFrame operations as well. Stay tuned for further updates in our GitHub page and follow our posts to stay informed about Modin news.
+Dynamic Partitioning will be implemented for other DataFrame operations as well. Stay tuned for further updates in 
+our GitHub page and follow our posts to stay informed about Modin news.
 
 #### Appendix
 
