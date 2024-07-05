@@ -54,8 +54,8 @@ Simply update to Modin 0.30.0 or higher.
 | min       | 5.537900437  | 1.803861558  | 3.07x  |
 | mean      | 6.400612667  | 2.005258847  | 3.19x  |
 
-To test the performance boost of Dynamic Partitioning, we generated a wide DataFrame with a shape of (20000, 5000).
-As you can see, the new Modin version provides significant speed-up for DataFrames with a large number of columns.
+To test the performance boost of Dynamic Partitioning we generated a wide DataFrame with a shape of (20000, 5000), which result in a large amount of partitions.
+As you can see, Modin 0.30.0 provides decent speed-up by benefiting from `Dynamic Partitioning`.
 
 ### Next Steps
 
