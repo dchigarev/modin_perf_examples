@@ -8,18 +8,19 @@ author: arunjose696
 
 ## Introduction
 
-Handling large datasets efficiently is a common challenge in data science. Traditional tools like Pandas can struggle with scalability, often becoming slow and memory-intensive with large datasets. This is where Modin and Ray come into play. Modin is a scalable dataframe library that accelerates Pandas operations by distributing the workload across multiple cores or nodes. Ray, a distributed computing framework, further enhances this scalability.
+Handling large datasets efficiently is a common challenge in data science. Traditional tools like Pandas can struggle with scalability, often becoming slow and memory-intensive with large datasets. This is where Modin and Ray come into play. Modin is a powerful dataframe library designed to scale Pandas operations by spreading the workload across multiple cores or nodes. It supports various backends such as Dask, Ray, and MPI, with Ray being the default choice. Ray a distributed computing framework ensures smooth and efficient data processing.
 
 ### Modin
 Modin is designed to scale Pandas seamlessly, allowing you to utilize all available hardware resources with minimal code changes. Simply replace your Pandas import with Modin, and you're ready to go.
 
 ### Ray
-Ray is the default backend for Modin. When operating in local mode (without a cluster), Modin will create and manage a local cluster using Dask or Ray. A key feature of Ray is its capability to extend a Ray cluster across multiple nodes. This means you can efficiently process your data workloads using a cluster of smaller machines, rather than relying on a single large machine.
-In contrast, Pandas processes data using a single thread and a single node. For memory-intensive tasks that cannot be handled by a single node, Pandas will encounter a memory error. To demonstrate this, I used the NY taxi dataset, which I synthetically expanded by replicating it 10 times to generate a large volume of data.
+Ray is the default backend for Modin, and it shines in handling data across multiple nodes. Even when running in local mode (without a full cluster), Modin sets up a local cluster using Dask or Ray to manage the workload. One of Ray's standout features is its ability to extend across multiple nodes, allowing you to process large data workloads using a cluster of smaller machines instead of relying on a single, massive machine.
+
+In contrast, Pandas operates on a single thread and node, which means that for memory-intensive tasks, it can quickly run into memory errors if a single node isn't sufficient. To illustrate this, I used the NY taxi dataset, expanding it synthetically by replicating it 10 times to create a dataset large enough to push the limits of a single-node setup.
 
 
 ### Work load
-I would be using the below script involving three operations: read_csv, apply, and map for my experiments. I have chosen operations that do not require data transfer between nodes to minimize data transfer across nodes. As the main goal here is to run the workload on cluster.
+For my experiments, I'll be using a script that involves three operations: `read_csv`, `apply`, and `map`. These operations have been selected to minimize data transfer between nodes, ensuring that the primary focus is on executing the workload efficiently within a cluster. The aim is to optimize performance by leveraging cluster capabilities without the added complexity of data movement between nodes.
 
 <details>
   <summary>pandas_workload.py</summary>
@@ -52,16 +53,18 @@ I would be using the below script involving three operations: read_csv, apply, a
 
 ### Running script on pandas 
 
-To run this workload, I chose a t3.2xlarge instance, which has 32GB of RAM and can hold the whole data in memory. However when processing the script, Pandas encounters an Out of Memory (OOM) error on the t3.2xlarge instance and crashed because the processing dataframe required more memory than a single node could provide. The original data fit into memory, but the additional memory needed during processing caused the issue. Since a single node was insufficient for the workload, the options were to scale the system either horizontally (using multiple nodes) or vertically (using a more powerful machine). Because Pandas operates only on a single node, horizontal scaling isn't an option. However, Modin on Ray can achieve this by distributing the workload across multiple nodes. 
+To run this workload, I chose a t3.2xlarge instance with 32GB of RAM, enough to hold all the data in memory. However, when processing the script, Pandas encountered an Out of Memory (OOM) error and crashed because the processing dataframe required more memory than a single node could provide. The original data fit into memory, but the additional memory needed during processing caused the issue. Since a single node was insufficient for the workload, we had two options: scale horizontally (using multiple nodes) or vertically (using a more powerful machine). Pandas, limited to a single node, can't scale horizontally. Fortunately, Modin on Ray can distribute the workload across multiple nodes, making horizontal scaling possible.
 
 ### Prerequisites
 
-The seamlessness of Modin allows you to execute the same code as your Pandas code on a cluster. You can easily submit the python script as a Ray job to a Ray cluster. However, prerequisites include:
-1.	A Ray cluster must be set up.
-2.	The dataset must be available on all nodes in the cluster.
+Modin makes it a breeze to run your existing Pandas code on a cluster with minimal changes. You can simply submit your Python script as a Ray job to a Ray cluster. Just keep in mind a couple of prerequisites:
+
+1.  You need to have a Ray cluster up and running.
+2.  The dataset must be available(not just accessible) on all nodes in the cluster.
 
 #### Setting Up Ray Cluster and Distributing the Dataset
-There are multiple ways to spawn a Ray cluster. You can have your on-premise Ray cluster, or an easy alternative is to set up a cluster in AWS using tools such as [KubeRay](https://github.com/ray-project/kuberay/tree/master/helm-chart/ray-cluster). In my configuration, I used [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) that download and prepare data on all nodes of the Ray cluster, satisfying both prerequisites.
+
+There are several ways to set up a Ray cluster. You can opt for an on-premise setup or take the easier route of configuring a cluster in AWS using tools like [KubeRay](https://github.com/ray-project/kuberay/tree/master/helm-chart/ray-cluster). In my configuration, I used [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) to download and prepare data on all nodes of the Ray cluster, ensuring that both prerequisites are effectively met.
 
 Once the Ray cluster is up and running, set the RAY_ADDRESS environment variable to the Ray dashboard URL on your client machine.
 ```bash
@@ -117,32 +120,33 @@ You can view the complete Python script below.
 
 ### Results and discussion
 
-I observed that by scaling up the number of cluster nodes, Modin could execute the workload with 4 nodes and above. It was also noted that Modin shows performance improvements when scaling the number of nodes from 4 to 32.
-As Modin works with 4 nodes and both Pandas and Modin do not work with fewer than 3 nodes, a possible conclusion is that the workload requires almost 4 times the memory(32Gb) of a single t3.2xlarge instance. To provide an apples-to-apples comparison for the performance gain that can be obtained by Modin compared to Pandas, we decided to benchmark the script on an instance with more than 120 GB of memory. We selected an r6a.4xlarge instance, which comes with 128GiB RAM.
+I observed that by increasing the number of cluster nodes, Modin could handle the workload effectively with 4 nodes or more. Significant performance improvements were evident as we scaled from 4 to 32 nodes. Given that Modin operates efficiently with 4 nodes and both Pandas and Modin struggle with fewer than 3 nodes, it suggests the workload demands nearly 4 times the memory (32GB) of a single t3.2xlarge instance.
 
-With Pandas, this script takes 487.444 seconds to execute. The graph below shows the time taken by Modin to execute the script when run with different cluster sizes. The x-axis shows the number of nodes in the Ray cluster. Each of the trend lines shows the number of CPUs to be used by Ray in each node. Modin, by default, sets the number of workers equal to the total number of CPUs in the Ray cluster.
+To provide a fair comparison of the performance gains offered by Modin over Pandas, we decided to benchmark the script on an instance with over 120 GB of memory. We chose an r6a.4xlarge instance, which boasts 128GiB of RAM.
+
+With Pandas, the script took almost 400 seconds to execute, which serves as our baseline.
 
 
 
 ### Performance on a Single Node
-From the graph, it appears that Modin on a single node is initially slower than Pandas if we use 4 or fewer workers (leftmost points of orange, grey, and yellow lines). This could be because we have very few Ray workers to provide sufficient parallelism for speed up compared to Pandas. Even with a single node, if we utilize all of the CPUs (or even 8 CPUs), we can see Modin offers a performance improvement compared to Pandas.
+The graph reveals an interesting twist: Modin on a single node starts off slower than Pandas when using 4 workers or fewer. This could be because the overhead of distributing data and spinning up the Ray cluster doesn't pay off with so few workers. It's like trying to split chores among two people when you really need a full team. But here's where it gets exciting: crank up the CPU count (even just to 8), and Modin shifts into high gear, outperforming Pandas even on a single node. Talk about a comeback!
 
 <img src="imgs/blog_post_4/Modin_single_node.png" alt="Perf Results single node"  style="display: block; margin-left: auto; margin-right: auto;">
 
 
 ### Performance on Scaling Nodes to 32
 
-We can see the performance continues to increase if we add more nodes to the cluster. Using a 32-node cluster with all 16 CPUs utilized in all nodes executes the script in a significantly reduced time, which is a significant performance improvement compared to executing the workload on a single node.
+The performance continues to soar as we add more nodes to the cluster. With a 32-node cluster, utilizing all 16 CPUs in each node, the script executes in a fraction of the time it takes on a single node. This results in a dramatic performance boost, showcasing the impressive scalability of Modin.
 
 <img  src="imgs/blog_post_4/Modin_multiple_nodes.png" alt="Perf Results multinode"  style="display: block; margin-left: auto; margin-right: auto;">
 
 #### Appendix
 
-All performance measurements for this post were made on Intel(R) Xeon(R) Gold 6238R CPU @ 2.20GHz (112 CPUs; 200 GB RAM).
+All performance measurements for this post were made on an AWS r6a.4xlarge instance.
 
 - Modin version: 0.30.0
 - Pandas version: 2.2.2
 - Execution engine: Ray
 - Ray version: 2.9.2
-- OS: Ubuntu 22.04.2 LTS
-- Python: 3.9
+- OS: Ubuntu 20.04.6 LTS
+- Python: 3.9.18
