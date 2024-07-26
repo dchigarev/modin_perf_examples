@@ -127,12 +127,14 @@ With Pandas, this script takes 487.444 seconds to execute. The graph below shows
 ### Performance on a Single Node
 From the graph, it appears that Modin on a single node is initially slower than Pandas if we use 4 or fewer workers (leftmost points of orange, grey, and yellow lines). This could be because we have very few Ray workers to provide sufficient parallelism for speed up compared to Pandas. Even with a single node, if we utilize all of the CPUs (or even 8 CPUs), we can see Modin offers a performance improvement compared to Pandas.
 
+<img src="imgs/blog_post_4/Modin_single_node.png" alt="Perf Results single node"  style="display: block; margin-left: auto; margin-right: auto;">
+
+
 ### Performance on Scaling Nodes to 32
 
 We can see the performance continues to increase if we add more nodes to the cluster. Using a 32-node cluster with all 16 CPUs utilized in all nodes executes the script in a significantly reduced time, which is a significant performance improvement compared to executing the workload on a single node.
-<div class="centered-image">
-    <img src="imgs/blog_post_4/Modin_multiple_nodes.png" alt="Perf Results multinode" >
-</div>
+
+<img  src="imgs/blog_post_4/Modin_multiple_nodes.png" alt="Perf Results multinode"  style="display: block; margin-left: auto; margin-right: auto;">
 
 #### Appendix
 
