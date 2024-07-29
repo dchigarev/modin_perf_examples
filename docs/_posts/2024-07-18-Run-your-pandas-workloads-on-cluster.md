@@ -17,7 +17,14 @@ with Ray being the default choice. Ray a distributed computing framework ensures
 efficient data processing.
 
 ### Modin
-Modin is designed to scale Pandas seamlessly, allowing you to utilize all available hardware resources with minimal code changes. Simply replace your Pandas import with Modin, and you're ready to go.
+Modin is designed to scale pandas seamlessly, allowing you to utilize all available hardware resources with minimal code changes. Simply replace your pandas import with Modin, and you're ready to go.
+
+```python
+# import pandas as pd
+import modin.pandas as pd
+ 
+# your workload without any changes
+```
 
 ### Ray
 
@@ -93,11 +100,14 @@ take the easier route of configuring a cluster in AWS using tools like
 In our configuration, we used [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/)
 to download and prepare data on all nodes of the Ray cluster, ensuring that both prerequisites are effectively met.
 
-Once the Ray cluster is up and running, set the RAY_ADDRESS environment variable to the Ray dashboard URL on your client machine.
+Once the Ray cluster is up and running, set the  `RAY_ADDRESS` environment variable
+to the Ray dashboard URL on your client machine.
+
 ```bash
 export RAY_ADDRESS=URL_OF_RAY_DASHBOARD
 ```
-Now, make minor changes to your Python script by importing Pandas from Modin and initializing Ray.
+
+Now, make minor changes to your Python script by importing pandas from Modin and initializing Ray.
 
 ```python
 import modin.pandas as pd
