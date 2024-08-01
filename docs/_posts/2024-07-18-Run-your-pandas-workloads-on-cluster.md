@@ -124,8 +124,9 @@ You can view the complete Python script below.
     <pre><code class="language-python">
     # import pandas as pd
     import modin.pandas as pd
-    import ray
     from modin.utils import execute # execute is just used to make sure all the asynchronous operations are complete as we benchmark.
+        import ray
+
     ray.init(address="auto", logging_level="WARNING")
     file_path = "/home/ray/data/big_yellow.csv"
     df = pd.read_csv(file_path)
