@@ -12,9 +12,7 @@ Handling large datasets efficiently is a common challenge in data science.
 Traditional tools like pandas can struggle with scalability, often becoming slow and
 memory-intensive with large datasets. This is where Modin on Ray comes into play.
 Modin is a powerful dataframe library designed to scale pandas operations by spreading the workload
-across multiple cores or nodes. It supports various execution engines such as Ray, Dask and MPI,
-with Ray being the default choice. Ray a distributed computing framework ensures smooth and
-efficient data processing.
+across multiple cores or nodes. It supports various execution engines such as Ray, Dask and MPI.
 
 ### Modin
 
@@ -38,7 +36,7 @@ expanding it synthetically by replicating it 10 times to create a dataset large 
 
 ### Workload
 
-For the experiments, we will be using a script that involves three operations: `read_csv`, `apply`, and `map`.
+For the experiments, we will be using a script that involves five operations: `read_csv`, `apply`, `map`, `replace`, and `round`.
 These operations have been selected to minimize data transfer between nodes, ensuring that the primary
 focus is on executing the workload efficiently within a cluster. The aim is to optimize performance by
 leveraging cluster capabilities without the added complexity of data movement between nodes.
@@ -69,6 +67,8 @@ leveraging cluster capabilities without the added complexity of data movement be
         return str(row["passenger_count"]) + " passengers were picked up at " + str(row["tpep_pickup_datetime"])
 
     result["description"] = df.apply(custom_function, axis=1)
+    result['store_and_fwd_flag'] = df['store_and_fwd_flag'].replace({'N': 'No', 'Y': 'Yes'})
+    result["total_amount_rounded"] = df["total_amount"].round(1)
 
   </code></pre>
 </details>
@@ -148,6 +148,8 @@ You can view the complete Python script below.
         return str(row["passenger_count"]) + " passengers were picked up at " + str(row["tpep_pickup_datetime"])
 
     result["description"] = df.apply(custom_function, axis=1)
+    result['store_and_fwd_flag'] = df['store_and_fwd_flag'].replace({'N': 'No', 'Y': 'Yes'})
+    result["total_amount_rounded"] = df["total_amount"].round(1)
     execute(result)
     </code></pre>
 
@@ -188,11 +190,24 @@ This results in a dramatic performance boost, showcasing the impressive scalabil
 
 <img  src="imgs/blog_post_4/Modin_multiple_nodes.png" alt="Perf Results multinode"  style="display: block; margin-left: auto; margin-right: auto;">
 
+## Disclaimer
+
+<div style="border: 1px solid #ddd; padding: 10px; margin-top: 20px; background-color: #f9f9f9;">
+**Disclaimer:** The workload demonstrated in this post is designed to be
+embarrassingly parallel to illustrate Modin's horizontal scaling capabilities.
+Be aware that it is possible results may not show positive scaling in a cluster environment if
+operations require data transfer across nodes.
+</div>
+
+## Further Reading
+
+For more information on using Modin, please refer to the [official documentation](https://modin.readthedocs.io/en/stable/getting_started/using_modin/using_modin.html).
+
 #### Appendix
 
 All performance measurements for this post were made on an AWS r6a.4xlarge instance.
 
-- Modin version: 0.30.0
+- Modin version: 0.32.0
 - Pandas version: 2.2.2
 - Execution engine: Ray
 - Ray version: 2.9.2
