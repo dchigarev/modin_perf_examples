@@ -17,13 +17,12 @@ with Ray being the default choice. Ray a distributed computing framework ensures
 efficient data processing.
 
 ### Modin
+
 Modin is designed to scale pandas seamlessly, allowing you to utilize all available hardware resources with minimal code changes. Simply replace your pandas import with Modin, and you're ready to go.
 
 ```python
 # import pandas as pd
 import modin.pandas as pd
- 
-# your workload without any changes
 ```
 
 ### Ray
@@ -49,6 +48,7 @@ leveraging cluster capabilities without the added complexity of data movement be
 
   <pre><code class="language-python">
     import pandas as pd
+
     file_path = "/home/ray/data/big_yellow.csv"
     df = pd.read_csv(file_path)
     df = df.map(str)
@@ -112,11 +112,9 @@ Now, make minor changes to your Python script by importing pandas from Modin and
 ```python
 import modin.pandas as pd
 import ray
+
 ray.init(address="auto", logging_level="WARNING")
-# your workload without any changes
 ```
-
-
 
 You can view the complete Python script below.
 
@@ -156,7 +154,6 @@ You can view the complete Python script below.
 </details>
 
 ### Results
-
 
 We can observe that by increasing the number of nodes in the cluster, Modin could handle the workload
 effectively with 4 nodes or more. Significant performance improvements were evident as we scaled
