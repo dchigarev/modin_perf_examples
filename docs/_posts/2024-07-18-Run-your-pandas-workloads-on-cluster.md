@@ -160,7 +160,7 @@ You can view the complete Python script below.
 
 We can observe that by increasing the number of nodes in the cluster, Modin could handle the workload
 effectively with 4 nodes or more. Significant performance improvements were evident as we scaled
-from 4 to 32 nodes. Given that Modin operates efficiently with 4 nodes and both pandas and Modin
+from 4 to 32 nodes. Given that Modin operates efficiently with 4 nodes and both pandas(as pandas does not offer horizontal scaling) and Modin
 struggle with fewer than 3 nodes, it suggests the workload demands nearly 4 times the memory (32GB) of
 a single t3.2xlarge instance.
 
@@ -179,7 +179,7 @@ when you really need a full team. But here's where it gets exciting: crank up th
 (even just to 8), and Modin shifts into high gear, outperforming pandas even on a single node.
 Talk about a comeback!
 
-<img src="imgs/blog_post_4/Modin_single_node.png" alt="Perf Results single node"  style="display: block; margin-left: auto; margin-right: auto;">
+<img src="imgs/blog_post_4/Modin_single_node.svg" alt="Perf Results single node"  style="display: block; margin-left: auto; margin-right: auto;">
 
 
 ### Performance on Scaling Nodes to 32
@@ -188,12 +188,10 @@ The performance continues to soar as we add more nodes to the cluster. With a 32
 utilizing all 16 CPUs in each node, the script executes in a fraction of the time it takes on a single node.
 This results in a dramatic performance boost, showcasing the impressive scalability of Modin.
 
-<img  src="imgs/blog_post_4/Modin_multiple_nodes.png" alt="Perf Results multinode"  style="display: block; margin-left: auto; margin-right: auto;">
-
-## Disclaimer
+<img  src="imgs/blog_post_4/Modin_multiple_nodes.svg" alt="Perf Results multinode"  style="display: block; margin-left: auto; margin-right: auto;">
 
 <div style="border: 1px solid #ddd; padding: 10px; margin-top: 20px; background-color: #f9f9f9;">
-**Disclaimer:** The workload demonstrated in this post is designed to be
+<strong>Disclaimer:</strong> The workload demonstrated in this post is designed to be
 embarrassingly parallel to illustrate Modin's horizontal scaling capabilities.
 Be aware that it is possible results may not show positive scaling in a cluster environment if
 operations require data transfer across nodes.
