@@ -16,7 +16,8 @@ across multiple cores or nodes. It supports various execution engines such as Ra
 
 ### Modin
 
-Modin is designed to scale pandas seamlessly, allowing you to utilize all available hardware resources with minimal code changes. Simply replace your pandas import with Modin, and you're ready to go.
+Modin is designed to scale pandas seamlessly, allowing you to utilize all available hardware resources
+with minimal code changes. Simply replace your pandas import with Modin, and you're ready to go.
 
 ```python
 # import pandas as pd
