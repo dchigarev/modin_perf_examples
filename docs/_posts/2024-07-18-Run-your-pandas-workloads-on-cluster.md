@@ -125,9 +125,9 @@ You can view the complete Python script below.
     <pre><code class="language-python">
     # import pandas as pd
     import modin.pandas as pd
-    from modin.utils import execute # execute is just used to make sure all the asynchronous operations are complete as we benchmark.
-        import ray
-
+    # execute is just used to make sure all the asynchronous operations are complete as we benchmark.
+    from modin.utils import execute 
+    import ray
     ray.init(address="auto", logging_level="WARNING")
     file_path = "/home/ray/data/big_yellow.csv"
     df = pd.read_csv(file_path)
@@ -161,7 +161,7 @@ You can view the complete Python script below.
 
 We can observe that by increasing the number of nodes in the cluster, Modin could handle the workload
 effectively with 4 nodes or more. Significant performance improvements were evident as we scaled
-from 4 to 32 nodes. Given that Modin operates efficiently with 4 nodes and both pandas(as pandas does not offer horizontal scaling) and Modin
+from 4 to 32 nodes. Given that Modin operates efficiently with 4 nodes and both pandas (as pandas does not offer horizontal scaling) and Modin
 struggle with fewer than 3 nodes, it suggests the workload demands nearly 4 times the memory (32GB) of
 a single t3.2xlarge instance.
 
