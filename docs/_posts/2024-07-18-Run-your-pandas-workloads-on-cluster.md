@@ -154,7 +154,6 @@ You can view the complete Python script below.
     execute(result)
     </code></pre>
 
-  ```
 </details>
 
 ### Results
